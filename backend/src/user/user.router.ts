@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { handleValidationResult } from "../utils/util.validation";
+import { handleValidationResult } from "../validation";
 import { hasValidPassword, hasValidUsername } from "./user.router.validation";
 
 export const makeUserRouter = () => {
