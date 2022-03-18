@@ -18,4 +18,5 @@ const userSchema = new Schema<User>({
   },
 });
 
+// Should not export this. Export an object which wraps the wanted functions without all the extra shit.
 export default model<User>("User", userSchema);

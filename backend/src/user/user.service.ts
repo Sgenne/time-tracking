@@ -1,17 +1,29 @@
 import { genSalt, hash } from "bcrypt";
 import { randomUUID } from "crypto";
+import Repository from "../db/repository.interface";
 import { Status } from "../service-result";
 import ServiceResult from "../service-result/serviceResult.interface";
 import User from "./user.interface";
-import userRepository from "./user.repository";
 
+export interface UserService {
+  registerUser: (
+    username: string,
+    password: string
+  ) => Promise<ServiceResult<User>>;
+}
 
-export default class UserService {
+export default class UserServiceImp implements UserService {
+  private userRepository: Repository<User>;
+
+  constructor(userRepository: Repository<User>) {
+    this.userRepository = userRepository;
+  }
+
   async registerUser(
     username: string,
     password: string
   ): Promise<ServiceResult<User>> {
-    const usernameOwner: User | null = await userRepository.findOne({
+    const usernameOwner: User | null = await this.userRepository.findOne({
       username: username,
     });
 
@@ -31,7 +43,7 @@ export default class UserService {
       joinDate: new Date(),
     };
 
-    await userRepository.create(newUser);
+    await this.userRepository.create(newUser);
 
     return {
       status: Status.OK,
