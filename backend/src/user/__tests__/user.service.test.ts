@@ -1,10 +1,10 @@
-import Repository from "../../db/repository.interface";
+import { Repository } from "../../db/repository";
 import User from "../user.interface";
 import UserService from "../user.service";
 
 describe("If no users are registered", () => {
   const mockUserRepository: Repository<User> = {
-    findOne: async () => null,
+    findOne: async () => undefined,
     create: async (newUser: User) => newUser,
   };
 
@@ -36,7 +36,7 @@ describe("If a user is registered", () => {
 
   const mockUserRepository: Repository<User> = {
     findOne: async () => registeredUser,
-    create: async () => null,
+    create: async () => undefined,
   };
 
   const userService = new UserService(mockUserRepository);

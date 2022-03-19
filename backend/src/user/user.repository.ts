@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import Repository from "../db/repository";
 import User from "./user.interface";
 
 const userSchema = new Schema<User>({
@@ -18,5 +19,8 @@ const userSchema = new Schema<User>({
   },
 });
 
-// Should not export this. Export an object which wraps the wanted functions without all the extra shit.
-export default model<User>("User", userSchema);
+const userModel = model<User>("User", userSchema);
+
+const userRepository = new Repository<User>(userModel);
+
+export default userRepository;

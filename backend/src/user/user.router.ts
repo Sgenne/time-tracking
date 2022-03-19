@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { Status } from "../service-result";
 import { handleValidationResult } from "../validation";
 import { hasValidPassword, hasValidUsername } from "./user.router.validation";
-import { UserService } from "./user.service";
+import UserService from "./user.service";
 
 export const makeUserRouter = (userService: UserService) => {
   const router = Router();
@@ -17,8 +17,11 @@ export const makeUserRouter = (userService: UserService) => {
       const password = req.body.password;
 
       try {
+
+
         const { payload: registeredUser, status } =
           await userService.registerUser(username, password);
+
 
         if (registeredUser) {
           return res.status(201).json({ created: registeredUser });
@@ -35,6 +38,7 @@ export const makeUserRouter = (userService: UserService) => {
             "The user could not be registered due to an unexpected error.",
         });
       } catch (error) {
+        console.error(error);
         const message =
           error instanceof Error
             ? error.message
