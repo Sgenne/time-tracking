@@ -14,7 +14,7 @@ describe("If no users are registered", () => {
     const dummyUsername = "dummyUsername";
     const dummyPassword = "dummyPassword";
 
-    const { payload: newUser } = await userService.registerUser(
+    const { payload: newUser } = await userService.createUser(
       dummyUsername,
       dummyPassword
     );
@@ -27,7 +27,7 @@ describe("If no users are registered", () => {
 
 describe("If a user is registered", () => {
   const takenUsername = "takenUsername";
-  const registeredUser: User = {
+  const existingUser: User = {
     username: takenUsername,
     passwordHash: "skdjhfskdjfhksdf",
     id: "sksjdhf223r4",
@@ -35,14 +35,14 @@ describe("If a user is registered", () => {
   };
 
   const mockUserRepository: Repository<User> = {
-    findOne: async () => registeredUser,
+    findOne: async () => existingUser,
     create: async () => undefined,
   };
 
   const userService = new UserService(mockUserRepository);
 
   it("then registering with the same username fails", async () => {
-    const { payload: newUser } = await userService.registerUser(
+    const { payload: newUser } = await userService.createUser(
       takenUsername,
       "abcdefg234234234"
     );

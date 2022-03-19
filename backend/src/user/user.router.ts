@@ -1,30 +1,61 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { Status } from "../service-result";
+import ServiceResult from "../service-result/serviceResult.interface";
 import { handleValidationResult } from "../validation";
+import User from "./user.interface";
 import { hasValidPassword, hasValidUsername } from "./user.router.validation";
-import UserService from "./user.service";
+import { UserService } from "./user.service";
 
 export const makeUserRouter = (userService: UserService) => {
   const router = Router();
 
+  /**
+   * Searches for a user with the given id.
+   */
+  router.get(
+    "/:id",
+    async (req: Request, res: Response, next: NextFunction) => {
+      const id = req.params.id;
+
+      try {
+        const { payload: foundUser, status }: ServiceResult<User> =
+          await userService.getUser(id);
+
+        if (foundUser) {
+          return res.status(200).json({ user: foundUser });
+        }
+
+        if (status === Status.RESOURCE_NOT_FOUND) {
+          return res
+            .status(404)
+            .json({ message: "No user with the given id was found." });
+        }
+      } catch (error) {
+        return next(error);
+      }
+    }
+  );
+
+  /**
+   * Creates a user.
+   */
   router.post(
     "/",
     hasValidUsername,
     hasValidPassword,
     handleValidationResult,
-    async (req: Request, res: Response) => {
+    async (req: Request, res: Response, next: NextFunction) => {
       const username = req.body.username;
       const password = req.body.password;
 
       try {
+        const { payload: existingUser, status } = await userService.createUser(
+          username,
+          password
+        );
 
-
-        const { payload: registeredUser, status } =
-          await userService.registerUser(username, password);
-
-
-        if (registeredUser) {
-          return res.status(201).json({ created: registeredUser });
+        if (existingUser) {
+          return res.status(201).json({ user: existingUser });
         }
 
         if (status === Status.RESOURCE_OCCUPIED) {
@@ -38,14 +69,10 @@ export const makeUserRouter = (userService: UserService) => {
             "The user could not be registered due to an unexpected error.",
         });
       } catch (error) {
-        console.error(error);
-        const message =
-          error instanceof Error
-            ? error.message
-            : "The user could not be registered due to an unexpected error.";
-        return res.status(500).json({ message: message });
+        return next(error);
       }
     }
   );
+
   return router;
 };

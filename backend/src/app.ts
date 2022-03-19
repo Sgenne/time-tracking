@@ -1,5 +1,4 @@
 import express from "express";
-import makeProjectRouter from "./project/project.router";
 import { createUserRouter } from "./user/user.factory";
 
 export const app = express();

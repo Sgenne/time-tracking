@@ -5,14 +5,31 @@ import { Status } from "../service-result";
 import ServiceResult from "../service-result/serviceResult.interface";
 import User from "./user.interface";
 
-export default class UserService {
+export interface UserService {
+  createUser: (
+    username: string,
+    password: string
+  ) => Promise<ServiceResult<User>>;
+  getUser: (id: string) => Promise<ServiceResult<User>>;
+}
+
+export default class UserServiceProvider implements UserService {
   private readonly userRepository: Repository<User>;
 
   constructor(userRepository: Repository<User>) {
     this.userRepository = userRepository;
   }
 
-  async registerUser(
+  /**
+   * Registers a user with the given credentials.
+   *
+   * @param username The username of the new user.
+   * @param password The password of the new user.
+   * @returns A ServiceResult where status is RESOURCE_OCCUPIED if the username is
+   * already taken, otherwise OK. If the user was registered, then the payload will
+   * be the new user object.
+   */
+  async createUser(
     username: string,
     password: string
   ): Promise<ServiceResult<User>> {
@@ -41,6 +58,30 @@ export default class UserService {
     return {
       status: Status.OK,
       payload: newUser,
+    };
+  }
+
+  /**
+   * Returns the user with the given id.
+   *
+   * @param id - The id of the user to look for.
+   * @returns A ServiceResult where status is RESOURCE_NOT_FOUND if no
+   * user with the given id exists, otherwise OK.
+   */
+  async getUser(id: string): Promise<ServiceResult<User>> {
+    const user: User | undefined = await this.userRepository.findOne({
+      id: id,
+    });
+
+    if (!user) {
+      return {
+        status: Status.RESOURCE_NOT_FOUND,
+      };
+    }
+
+    return {
+      status: Status.OK,
+      payload: user,
     };
   }
 }
