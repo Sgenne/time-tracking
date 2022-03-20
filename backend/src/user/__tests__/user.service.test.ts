@@ -1,14 +1,16 @@
 import { Repository } from "../../db/repository";
 import User from "../user.interface";
 import UserService from "../user.service";
+import { mock, when, instance } from "ts-mockito";
+import { createDummyUser } from "../../setup-tests/mocks";
 
 describe("If no users are registered", () => {
-  const mockUserRepository: Repository<User> = {
-    findOne: async () => undefined,
-    create: async (newUser: User) => newUser,
-  };
+  const mockUserRepository = mock<Repository<User>>();
+  when(mockUserRepository.create).thenReturn(async (user) => user);
 
-  const userService = new UserService(mockUserRepository);
+  const userRepository = instance(mockUserRepository);
+
+  const userService = new UserService(userRepository);
 
   it("then registering with valid credentials succeeds.", async () => {
     const dummyUsername = "dummyUsername";
@@ -26,25 +28,19 @@ describe("If no users are registered", () => {
 });
 
 describe("If a user is registered", () => {
-  const takenUsername = "takenUsername";
-  const existingUser: User = {
-    username: takenUsername,
-    passwordHash: "skdjhfskdjfhksdf",
-    id: "sksjdhf223r4",
-    joinDate: new Date(),
-  };
+  const existingUser = createDummyUser();
 
-  const mockUserRepository: Repository<User> = {
-    findOne: async () => existingUser,
-    create: async () => undefined,
-  };
+  const mockUserRepository = mock<Repository<User>>();
+  when(mockUserRepository.findOne).thenReturn(async () => existingUser);
 
-  const userService = new UserService(mockUserRepository);
+  const userRepository = instance(mockUserRepository);
+
+  const userService = new UserService(userRepository);
 
   it("then registering with the same username fails", async () => {
     const { payload: newUser } = await userService.createUser(
-      takenUsername,
-      "abcdefg234234234"
+      existingUser.username,
+      existingUser.passwordHash
     );
 
     expect(newUser).toBeUndefined();

@@ -62,4 +62,27 @@ export default class ProjectServiceProvider implements ProjectService {
       payload: project,
     };
   }
+
+  /**
+   * Returns a specified project.
+   *
+   * @param id The id of the project to return.
+   */
+  async getProjectById(id: string): Promise<ServiceResult<Project>> {
+    const foundProject: Project | undefined =
+      await this.projectRepository.findOne({
+        id: id,
+      });
+
+    if (!foundProject) {
+      return {
+        status: Status.RESOURCE_NOT_FOUND,
+      };
+    }
+
+    return {
+      status: Status.OK,
+      payload: foundProject,
+    };
+  }
 }

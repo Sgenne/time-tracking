@@ -1,4 +1,4 @@
-import UserRouterCreator from "./user.router";
+import createRouter from "./user.router";
 import UserService from "./user.service";
 import userRepository from "./user.repository";
 
@@ -9,6 +9,5 @@ export const createUserService = () => {
 
 export const createUserRouter = () => {
   const service = createUserService();
-  const userRouterCreator = new UserRouterCreator(service);
-  return userRouterCreator.createRouter();
+  return createRouter(service);
 };

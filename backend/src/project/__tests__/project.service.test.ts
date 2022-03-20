@@ -3,68 +3,104 @@ import { Status } from "../../service-result";
 import { UserService } from "../../user/user.service";
 import Project from "../project.interface";
 import ProjectService from "../project.service";
+import { mock, when, instance } from "ts-mockito";
+import { createDummyProject, createDummyUser } from "../../setup-tests/mocks";
 
-const EMPTY_MOCK_PROJECT_REPOSITORY: Repository<Project> = {
-  findOne: async () => undefined,
-  create: async (project: Project) => project,
-};
+describe("When the project repository is empty, ", () => {
+  const dummyOwner = createDummyUser();
+  const dummyProject = createDummyProject();
 
-const USER_NOT_FOUND_MOCK_USER_SERVICE: UserService = {
-  createUser: async () => ({ status: Status.OK }),
-  getUser: async () => ({ status: Status.RESOURCE_NOT_FOUND }),
-};
+  const mockProjectRepository: Repository<Project> =
+    mock<Repository<Project>>();
+  when(mockProjectRepository.create).thenReturn(async (project) => project);
+  when(mockProjectRepository.findOne).thenReturn(async () => undefined);
+  const projectRepository = instance(mockProjectRepository);
 
-const MOCK_USER_SERVICE: UserService = {
-  createUser: async () => ({ status: Status.OK }),
-  getUser: async () => ({
-    status: Status.OK,
-    payload: {
-      id: "id",
-      username: "username",
-      passwordHash: "passwordHash",
-      joinDate: new Date(),
-    },
-  }),
-};
+  test("then creating a project fails if the specified owner doesn't exist.", async () => {
+    const { title, description, ownerId } = createDummyProject();
 
-const DUMMY_TITLE = "dummyTitle";
-const DUMMY_DESCRIPTION = "dummyDescription";
-const DUMMY_OWNER_ID = "dummyUserId";
+    const mockUserService: UserService = mock<UserService>();
+    when(mockUserService.getUser).thenReturn(async () => ({
+      status: Status.RESOURCE_NOT_FOUND,
+    }));
 
-test("Creating a project fails if the specified owner doesn't exist.", async () => {
-  const projectService = new ProjectService(
-    EMPTY_MOCK_PROJECT_REPOSITORY,
-    USER_NOT_FOUND_MOCK_USER_SERVICE
-  );
+    const userService = instance(mockUserService);
 
-  const { payload: createdProject, status } =
-    await projectService.createProject(
-      DUMMY_TITLE,
-      DUMMY_OWNER_ID,
-      DUMMY_DESCRIPTION
-    );
+    const projectService = new ProjectService(projectRepository, userService);
 
-  expect(createdProject).toBeUndefined();
-  expect(status).toBe(Status.RESOURCE_NOT_FOUND);
+    const { payload: createdProject, status } =
+      await projectService.createProject(title, ownerId, description);
+
+    expect(createdProject).toBeUndefined();
+    expect(status).toBe(Status.RESOURCE_NOT_FOUND);
+  });
+
+  test("then creating a project succeeds if the owner exists.", async () => {
+    const mockUserService: UserService = mock<UserService>();
+    when(mockUserService.getUser(dummyOwner.id)).thenResolve({
+      status: Status.OK,
+      payload: dummyOwner,
+    });
+
+    const userService = instance(mockUserService);
+
+    const projectService = new ProjectService(projectRepository, userService);
+
+    const { payload: createdProject, status } =
+      await projectService.createProject(
+        dummyProject.title,
+        dummyOwner.id,
+        dummyProject.description
+      );
+
+    if (!createdProject) throw new Error("The project was not created.");
+
+    expect(createdProject.title).toBe(dummyProject.title);
+    expect(createdProject.description).toBe(dummyProject.description);
+    expect(createdProject.ownerId).toBe(dummyOwner.id);
+    expect(status).toBe(Status.OK);
+  });
+
+  test("Requesting a project by id returns resource not found", async () => {
+    const mockUserService: UserService = mock<UserService>();
+    when(mockUserService.getUser(dummyOwner.id)).thenResolve({
+      status: Status.OK,
+      payload: dummyOwner,
+    });
+
+    const userService = instance(mockUserService);
+
+    const projectService = new ProjectService(projectRepository, userService);
+
+    const { status } = await projectService.getProjectById(dummyProject.id);
+
+    expect(status).toBe(Status.RESOURCE_NOT_FOUND);
+  });
 });
 
-test("Creating a project succeeds if the owner exists.", async () => {
-  const projectService = new ProjectService(
-    EMPTY_MOCK_PROJECT_REPOSITORY,
-    MOCK_USER_SERVICE
-  );
+describe("If the project repository is non-empty, ", () => {
+  const dummyProject = createDummyProject();
 
-  const { payload: createdProject, status } =
-    await projectService.createProject(
-      DUMMY_TITLE,
-      DUMMY_OWNER_ID,
-      DUMMY_DESCRIPTION
-    );
+  const mockProjectRepository: Repository<Project> =
+    mock<Repository<Project>>();
+  when(mockProjectRepository.create).thenReturn(async (project) => project);
+  when(mockProjectRepository.findOne).thenReturn(async ({ id }) => {
+    if (id === dummyProject.id) return dummyProject;
+  });
+  const projectRepository = instance(mockProjectRepository);
 
-  if (!createdProject) throw new Error("The project was not created.");
+  test("Requesting an existing project succeeds with 200", async () => {
+    const mockUserService = mock<UserService>();
+    const userService = instance(mockUserService);
 
-  expect(createdProject.title).toBe(DUMMY_TITLE);
-  expect(createdProject.description).toBe(DUMMY_DESCRIPTION);
-  expect(createdProject.ownerId).toBe(DUMMY_OWNER_ID);
-  expect(status).toBe(Status.OK);
+    const projectService = new ProjectService(projectRepository, userService);
+
+    const { status, payload: foundProject } =
+      await projectService.getProjectById(dummyProject.id);
+
+    if (!foundProject) throw new Error("No project was found.");
+
+    expect(status).toBe(Status.OK);
+    expect(foundProject.id).toBe(dummyProject.id);
+  });
 });
