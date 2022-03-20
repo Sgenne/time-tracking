@@ -12,7 +12,7 @@ export interface Repository<T> {
  * Wraps a mongoose model to provide the needed functionality with
  * none of the weird stuff.
  */
-export default class RepositoryImp<T> implements Repository<T> {
+export default class RepositoryProvider<T> implements Repository<T> {
   private readonly model: Model<T>;
 
   constructor(model: Model<T>) {

@@ -6,4 +6,5 @@ import { Status } from ".";
 export default interface ServiceResult<T> {
   status: Status;
   payload?: T;
+  message?: string;
 }
