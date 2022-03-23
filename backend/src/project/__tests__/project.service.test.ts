@@ -72,7 +72,9 @@ describe("When the project repository is empty, ", () => {
 
     const projectService = new ProjectService(projectRepository, userService);
 
-    const { status } = await projectService.getProjectById(dummyProject.id);
+    const { status } = await projectService.getProjectById(
+      dummyProject.projectId
+    );
 
     expect(status).toBe(Status.RESOURCE_NOT_FOUND);
   });
@@ -84,8 +86,8 @@ describe("If the project repository is non-empty, ", () => {
   const mockProjectRepository: Repository<Project> =
     mock<Repository<Project>>();
   when(mockProjectRepository.create).thenReturn(async (project) => project);
-  when(mockProjectRepository.findOne).thenReturn(async ({ id }) => {
-    if (id === dummyProject.id) return dummyProject;
+  when(mockProjectRepository.findOne).thenReturn(async ({ projectId }) => {
+    if (projectId === dummyProject.projectId) return dummyProject;
   });
   const projectRepository = instance(mockProjectRepository);
 
@@ -96,11 +98,11 @@ describe("If the project repository is non-empty, ", () => {
     const projectService = new ProjectService(projectRepository, userService);
 
     const { status, payload: foundProject } =
-      await projectService.getProjectById(dummyProject.id);
+      await projectService.getProjectById(dummyProject.projectId);
 
     if (!foundProject) throw new Error("No project was found.");
 
     expect(status).toBe(Status.OK);
-    expect(foundProject.id).toBe(dummyProject.id);
+    expect(foundProject.projectId).toBe(dummyProject.projectId);
   });
 });

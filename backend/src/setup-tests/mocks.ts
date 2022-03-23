@@ -20,5 +20,5 @@ export const createDummyProject = (): Project => ({
   title: dummyTitle,
   description: dummyDescription,
   ownerId: dummyId,
-  id: dummyId,
+  projectId: dummyId,
 });

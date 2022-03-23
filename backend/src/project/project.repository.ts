@@ -8,7 +8,7 @@ const projectSchema = new Schema<Project>({
     required: true,
   },
   description: String,
-  id: {
+  projectId: {
     type: String,
     required: true,
     unique: true,

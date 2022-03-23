@@ -11,6 +11,7 @@ export interface ProjectService {
     owner: string,
     description?: string
   ) => Promise<ServiceResult<Project>>;
+  getProjectById: (id: string) => Promise<ServiceResult<Project>>;
 }
 
 export default class ProjectServiceProvider implements ProjectService {
@@ -52,7 +53,7 @@ export default class ProjectServiceProvider implements ProjectService {
       title: title,
       ownerId: ownerId,
       description: description,
-      id: id,
+      projectId: id,
     };
 
     await this.projectRepository.create(project);
@@ -68,10 +69,10 @@ export default class ProjectServiceProvider implements ProjectService {
    *
    * @param id The id of the project to return.
    */
-  async getProjectById(id: string): Promise<ServiceResult<Project>> {
+  async getProjectById(projectId: string): Promise<ServiceResult<Project>> {
     const foundProject: Project | undefined =
       await this.projectRepository.findOne({
-        id: id,
+        projectId: projectId,
       });
 
     if (!foundProject) {

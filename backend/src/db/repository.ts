@@ -38,4 +38,11 @@ export default class RepositoryProvider<T> implements Repository<T> {
 
     if (result) return result;
   }
+
+  /**
+   * Returns all entries matching the given query.
+   */
+  async find(query: { [p in keyof T]?: any }): Promise<T[]> {
+    return this.model.find(query);
+  }
 }
