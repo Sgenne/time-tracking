@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sgenne</groupId>
-	<artifactId>time.tracking</artifactId>
+	<artifactId>time-tracking</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>time.tracking</name>
+	<name>time-tracking</name>
 	<description>Time tracking application</description>
 	<properties>
 		<java.version>17</java.version>

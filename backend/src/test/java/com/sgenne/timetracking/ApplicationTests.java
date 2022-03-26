@@ -1,4 +1,4 @@
-package com.sgenne.time.tracking;
+package com.sgenne.timetracking;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.sgenne.time.tracking;
+package com.sgenne.timetracking;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
