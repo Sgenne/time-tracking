@@ -1,4 +1,4 @@
-package com.sgenne.timetracking.authentication;
+package com.sgenne.timetracking.registration;
 
 import com.sgenne.timetracking.user.User;
 import com.sgenne.timetracking.user.UserController;
@@ -13,10 +13,10 @@ import java.net.URI;
 
 import static com.sgenne.timetracking.api.API.URL_PREFIX;
 
-@RequestMapping(AuthenticationController.ROOT_URL)
+@RequestMapping(RegistrationController.ROOT_URL)
 @AllArgsConstructor
-public class AuthenticationController {
-    private final AuthenticationService registrationService;
+public class RegistrationController {
+    private final RegistrationService registrationService;
 
     public static final String ROOT_URL = URL_PREFIX + "/auth";
 

@@ -1,5 +1,6 @@
-package com.sgenne.timetracking.authentication;
+package com.sgenne.timetracking.registration;
 
+import com.sgenne.timetracking.registration.RegisterRequest;
 import com.sgenne.timetracking.user.User;
 import com.sgenne.timetracking.user.UserService;
 import com.sgenne.timetracking.user.UserValidation;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
-public class AuthenticationService {
+public class RegistrationService {
     private final UserService userService;
 
     public User registerUser(RegisterRequest request) {

@@ -2,16 +2,22 @@ package com.sgenne.timetracking.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
     /**
@@ -23,7 +29,6 @@ public class UserService {
 
     /**
      * Returns the user with the given id.
-     * @param userId
      */
     public User getUserById(Integer userId) {
         return userRepository
@@ -43,8 +48,23 @@ public class UserService {
         user.setRole(role);
     }
 
-    public Collection<User> getAllUsers() {
-        return userRepository.findAll();
+    /**
+     * Returns the user with the given username.
+     */
+    public User getUserByUsername(String username) {
+        return userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("No user with the username %s was found")));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = getUserByUsername(username);
+
+        Collection<SimpleGrantedAuthority> authorities = List.of(
+                new SimpleGrantedAuthority(user.getRole().name()));
+
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
 
     }
 }

@@ -1,4 +1,4 @@
-package com.sgenne.timetracking.authentication;
+package com.sgenne.timetracking.registration;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
