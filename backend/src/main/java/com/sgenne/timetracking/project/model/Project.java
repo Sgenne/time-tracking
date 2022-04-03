@@ -1,7 +1,7 @@
 package com.sgenne.timetracking.project.model;
 
 
-import lombok.AllArgsConstructor;
+import com.sgenne.timetracking.user.model.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,8 +20,12 @@ public class Project {
     private String title;
     private String description;
 
-    public Project(String title, String description) {
+    @ManyToOne
+    private User owner;
+
+    public Project(String title, String description, User owner) {
         this.title = title;
         this.description = description;
+        this.owner = owner;
     }
 }
