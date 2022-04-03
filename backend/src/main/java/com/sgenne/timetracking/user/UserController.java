@@ -1,5 +1,6 @@
 package com.sgenne.timetracking.user;
 
+import com.sgenne.timetracking.user.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

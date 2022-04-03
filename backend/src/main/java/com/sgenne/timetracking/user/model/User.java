@@ -1,28 +1,32 @@
-package com.sgenne.timetracking.user;
+package com.sgenne.timetracking.user.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Data
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 @NoArgsConstructor
 public class User {
 
     @Id
-    @SequenceGenerator(name = "user_sequence")
+    @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
     private Long id;
 
     private String username;
     private String password;
 
-    public User(String username, String password) {
+    @ElementCollection(targetClass = Role.class)
+    private Collection<Role> roles;
+
+    public User(String username, String password, Collection<Role> roles) {
         this.username = username;
         this.password = password;
+        this.roles = roles;
     }
     
 }
