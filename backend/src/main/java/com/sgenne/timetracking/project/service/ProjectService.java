@@ -32,25 +32,16 @@ public class ProjectService {
         Long ownerId = request.getOwnerId();
         User owner = userService.getUserById(ownerId);
 
-        System.out.println("Before validation");
-
         titleIsValid(title).orThrow(
                 (message) -> new ResponseStatusException(BAD_REQUEST, message));
 
-        System.out.println("After first validation");
-
         descriptionIsValid(description).orThrow(
                 (message) -> new ResponseStatusException(BAD_REQUEST, message));
-
-
-        System.out.println("After validation");
-
 
         Project project = new Project(title, description, owner);
 
         return projectRepository.save(project);
     }
-
 
     public Project getProjectById(Long projectId) {
         return this
@@ -63,8 +54,4 @@ public class ProjectService {
                                         "No project with project-id \"%s\" was found.",
                                         projectId)));
     }
-
-
-
-
 }
