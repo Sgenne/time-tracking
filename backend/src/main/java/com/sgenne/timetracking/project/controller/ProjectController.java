@@ -1,6 +1,7 @@
 package com.sgenne.timetracking.project.controller;
 
 import com.sgenne.timetracking.project.model.Project;
+import com.sgenne.timetracking.project.request.AddActivityRequest;
 import com.sgenne.timetracking.project.request.CreateProjectRequest;
 import com.sgenne.timetracking.project.service.ProjectService;
 import lombok.AllArgsConstructor;
@@ -40,4 +41,11 @@ public class ProjectController {
 
         return ResponseEntity.created(uri).build();
     }
+
+    @PostMapping(name="/add-activity", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
+    public ResponseEntity<Void> addActivity(AddActivityRequest request) {
+        Project project = projectService.addActivity(request);
+    }
+
+
 }

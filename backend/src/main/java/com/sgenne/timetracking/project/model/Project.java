@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table
@@ -19,6 +20,9 @@ public class Project {
     private Long id;
     private String title;
     private String description;
+
+    @OneToMany
+    private List<Activity> activities;
 
     @ManyToOne
     private User owner;
