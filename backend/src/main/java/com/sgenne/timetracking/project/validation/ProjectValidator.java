@@ -14,7 +14,9 @@ public class ProjectValidator {
      */
     public static ValidationResult titleIsValid(String title) {
 
-        if (title == null) return new ValidationResult(false, "No title was provided.");
+        if (title == null) {
+            return new ValidationResult(false, "No title was provided.");
+        }
 
         if (title.length() < 3) {
             return new ValidationResult(

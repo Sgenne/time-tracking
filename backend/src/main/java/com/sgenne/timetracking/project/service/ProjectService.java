@@ -6,6 +6,7 @@ import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.repository.ProjectRepository;
 import com.sgenne.timetracking.project.request.AddActivityRequest;
 import com.sgenne.timetracking.project.request.CreateProjectRequest;
+import com.sgenne.timetracking.project.validation.ActivityValidator;
 import com.sgenne.timetracking.user.UserService;
 import com.sgenne.timetracking.user.model.User;
 import lombok.AllArgsConstructor;
@@ -70,7 +71,12 @@ public class ProjectService {
         Double duration = request.getDuration();
         Long projectId = request.getProjectId();
 
-        // TODO: Validate
+        ActivityValidator.titleIsValid(title)
+                .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
+        ActivityValidator.descriptionIsValid(description)
+                .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
+        ActivityValidator.durationIsValid(duration)
+                .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
 
         LocalDateTime startDateTime = LocalDateTime.parse(startTime);
 
