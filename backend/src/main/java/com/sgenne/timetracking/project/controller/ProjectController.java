@@ -45,6 +45,8 @@ public class ProjectController {
     @PostMapping(name="/add-activity", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public ResponseEntity<Void> addActivity(AddActivityRequest request) {
         Project project = projectService.addActivity(request);
+
+        return ResponseEntity.ok().build();
     }
 
 

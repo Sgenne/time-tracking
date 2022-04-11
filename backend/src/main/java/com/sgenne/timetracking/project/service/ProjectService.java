@@ -6,7 +6,6 @@ import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.repository.ProjectRepository;
 import com.sgenne.timetracking.project.request.AddActivityRequest;
 import com.sgenne.timetracking.project.request.CreateProjectRequest;
-import com.sgenne.timetracking.project.validation.ActivityValidator;
 import com.sgenne.timetracking.user.UserService;
 import com.sgenne.timetracking.user.model.User;
 import lombok.AllArgsConstructor;
@@ -18,6 +17,9 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.sgenne.timetracking.project.sanitizer.ActivitySanitizer.sanitizeDescription;
+import static com.sgenne.timetracking.project.sanitizer.ActivitySanitizer.sanitizeTitle;
+import static com.sgenne.timetracking.project.validation.ActivityValidator.durationIsValid;
 import static com.sgenne.timetracking.project.validation.ProjectValidator.descriptionIsValid;
 import static com.sgenne.timetracking.project.validation.ProjectValidator.titleIsValid;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -65,17 +67,17 @@ public class ProjectService {
     }
 
     public Project addActivity(AddActivityRequest request) {
-        String title = request.getTitle();
-        String description = request.getDescription();
+        String title = sanitizeTitle(request.getTitle());
+        String description = sanitizeDescription(request.getDescription());
         String startTime = request.getStartDateTime();
         Double duration = request.getDuration();
         Long projectId = request.getProjectId();
 
-        ActivityValidator.titleIsValid(title)
+        titleIsValid(title)
                 .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
-        ActivityValidator.descriptionIsValid(description)
+        descriptionIsValid(description)
                 .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
-        ActivityValidator.durationIsValid(duration)
+        durationIsValid(duration)
                 .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
 
         LocalDateTime startDateTime = LocalDateTime.parse(startTime);

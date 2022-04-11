@@ -18,7 +18,9 @@ public class ActivityValidator {
                     .inValid("No title was provided.");
         }
 
-        if (title.length() < 3) {
+        String trimmedTitle = title.trim();
+
+        if (trimmedTitle.length() < 3) {
             return ValidationResult
                     .inValid("The activity title must be at least three characters long.");
         }
