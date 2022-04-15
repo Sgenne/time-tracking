@@ -35,10 +35,29 @@ class ActivityValidatorTest {
 
     @Test
     void durationIsValid() {
+        List<Double> validDurations = List.of(0., 1440.);
+        List<Double> invalidDurations = List.of(-1., 1441.);
 
+
+        validDurations.forEach(duration -> {
+            assert ActivityValidator.durationIsValid(duration).isValid();
+        });
+
+        invalidDurations.forEach(duration -> {
+            assert !ActivityValidator.durationIsValid(duration).isValid();
+        });
+
+        assert !ActivityValidator.durationIsValid(null).isValid();
     }
 
     @Test
     void startDateTimeStringIsValid() {
+        List<String> validDateTimeStrings = List.of("2022-04-15T17:03:28Z");
+        List<String> invalidDateTimeStrings = List.of();
+
+        validDateTimeStrings.forEach(string -> {
+            assert ActivityValidator.startDateTimeStringIsValid(string).isValid();
+        });
+
     }
 }

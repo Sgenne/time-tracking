@@ -1,6 +1,8 @@
 package com.sgenne.timetracking.project.validation;
 
+import com.sgenne.timetracking.datetime.DateTimeParser;
 import com.sgenne.timetracking.validation.ValidationResult;
+import org.checkerframework.dataflow.qual.Pure;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -51,6 +53,10 @@ public class ActivityValidator {
             return ValidationResult.inValid("No duration was provided.");
         }
 
+        if (duration < 0) {
+            return ValidationResult.inValid("An activity cannot have a negative duration.");
+        }
+
         if (duration > 1440) {
             return ValidationResult.inValid("An activity cannot be more than 24 hours long.");
         }
@@ -59,7 +65,8 @@ public class ActivityValidator {
     }
 
     /**
-     * Checks if an activity startDateTime String is valid.
+     * Checks if an activity startDateTime String is valid. A startDateTime String is valid if it adheres to the Zulu
+     * datetime format.
      * @param startDateTime The value to be validated.
      * @return The result of the validation.
      */
@@ -69,17 +76,14 @@ public class ActivityValidator {
         }
 
         try {
-            LocalDateTime.parse(startDateTime);
+            DateTimeParser.parseZuluDateTime(startDateTime);
         } catch (DateTimeParseException e) {
             return ValidationResult
-                    .inValid(String.format("%s is not a valid ISO datetime.", startDateTime));
+                    .inValid(String.format("%s is not a valid zulu datetime.", startDateTime));
         }
 
         return ValidationResult.valid();
     }
-
-
-
 }
 
 
