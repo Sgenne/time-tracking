@@ -1,10 +1,14 @@
 package com.sgenne.timetracking.project.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateProjectRequest {
-    private final String title;
-    private final String description;
-    private final Long ownerId;
+    private String title;
+    private String description;
+    private Long ownerId;
 }

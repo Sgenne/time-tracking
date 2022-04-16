@@ -21,7 +21,7 @@ public class ActivityController {
     private final ActivityService activityService;
 
     @PostMapping(consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
-    public ResponseEntity<Void> addActivity(CreateActivityRequest request) {
+    public ResponseEntity<Void> addActivity(@RequestBody CreateActivityRequest request) {
         Activity createdActivity = activityService.createActivity(request);
 
         URI uri = URI.create(ServletUriComponentsBuilder

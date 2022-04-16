@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Activity {
 
-
     @SequenceGenerator(name = "activity_sequence", sequenceName = "activity_sequence")
     @GeneratedValue(generator = "activity_sequence")
     @Id
