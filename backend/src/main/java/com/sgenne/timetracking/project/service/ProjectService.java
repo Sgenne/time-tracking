@@ -1,10 +1,7 @@
 package com.sgenne.timetracking.project.service;
 
-import com.google.common.collect.ImmutableList;
-import com.sgenne.timetracking.project.model.Activity;
 import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.repository.ProjectRepository;
-import com.sgenne.timetracking.project.request.AddActivityRequest;
 import com.sgenne.timetracking.project.request.CreateProjectRequest;
 import com.sgenne.timetracking.user.UserService;
 import com.sgenne.timetracking.user.model.User;
@@ -14,12 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
-import java.util.List;
 
-import static com.sgenne.timetracking.project.sanitizer.ActivitySanitizer.sanitizeDescription;
-import static com.sgenne.timetracking.project.sanitizer.ActivitySanitizer.sanitizeTitle;
-import static com.sgenne.timetracking.project.validation.ActivityValidator.durationIsValid;
 import static com.sgenne.timetracking.project.validation.ProjectValidator.descriptionIsValid;
 import static com.sgenne.timetracking.project.validation.ProjectValidator.titleIsValid;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -54,6 +46,11 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
+    /**
+     * Finds a stored Project.
+     * @param projectId The id of the project to be found.
+     * @return The found project.
+     */
     public Project getProjectById(Long projectId) {
         return this
                 .projectRepository
@@ -66,34 +63,5 @@ public class ProjectService {
                                         projectId)));
     }
 
-    public Project addActivity(AddActivityRequest request) {
-        String title = sanitizeTitle(request.getTitle());
-        String description = sanitizeDescription(request.getDescription());
-        String startTime = request.getStartDateTime();
-        Double duration = request.getDuration();
-        Long projectId = request.getProjectId();
 
-        titleIsValid(title)
-                .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
-        descriptionIsValid(description)
-                .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
-        durationIsValid(duration)
-                .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
-
-        LocalDateTime startDateTime = LocalDateTime.parse(startTime);
-
-        Activity newActivity = new Activity(title, description, startDateTime, duration);
-
-        Project project = getProjectById(projectId);
-
-        List<Activity> prevActivities = project.getActivities();
-        List<Activity> updatedActivities = new ImmutableList.Builder<Activity>()
-                .addAll(prevActivities)
-                .add(newActivity)
-                .build();
-
-        project.setActivities(updatedActivities);
-
-        return project;
-    }
 }

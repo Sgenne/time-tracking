@@ -20,10 +20,6 @@ public class Project {
     private Long id;
     private String title;
     private String description;
-
-    @OneToMany
-    private List<Activity> activities;
-
     @ManyToOne
     private User owner;
 

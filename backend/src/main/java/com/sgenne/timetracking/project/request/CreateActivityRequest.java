@@ -2,10 +2,8 @@ package com.sgenne.timetracking.project.request;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
-public class AddActivityRequest {
+public class CreateActivityRequest {
     private final String title;
     private final String description;
     private final String startDateTime;

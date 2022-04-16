@@ -1,6 +1,5 @@
 package com.sgenne.timetracking.project.validation;
 
-import com.sgenne.timetracking.datetime.DateTimeParser;
 import com.sgenne.timetracking.validation.ValidationResult;
 import org.checkerframework.dataflow.qual.Pure;
 
@@ -76,7 +75,7 @@ public class ActivityValidator {
         }
 
         try {
-            DateTimeParser.parseZuluDateTime(startDateTime);
+            LocalDateTime.parse(startDateTime);
         } catch (DateTimeParseException e) {
             return ValidationResult
                     .inValid(String.format("%s is not a valid zulu datetime.", startDateTime));

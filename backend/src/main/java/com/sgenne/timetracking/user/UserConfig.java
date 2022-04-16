@@ -16,13 +16,6 @@ import static com.sgenne.timetracking.user.model.Role.USER;
 @Configuration
 public class UserConfig {
 
-    @Bean
-    CommandLineRunner commandLineRunner(UserService userService, ProjectService projectService) {
-        return args -> {
-            User user = new User("sgenne", "123123", List.of(USER, ADMIN));
-            userService.saveUser(user);
-            System.out.println("hello");
-        };
-    }
+
 
 }

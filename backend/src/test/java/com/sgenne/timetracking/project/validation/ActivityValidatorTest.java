@@ -52,11 +52,15 @@ class ActivityValidatorTest {
 
     @Test
     void startDateTimeStringIsValid() {
-        List<String> validDateTimeStrings = List.of("2022-04-15T17:03:28Z");
-        List<String> invalidDateTimeStrings = List.of();
+        List<String> validDateTimeStrings = List.of("2022-04-15T17:03:28", "2022-04-15T17:03:28.004234234", "2022-04-15T00:00");
+        List<String> invalidDateTimeStrings = List.of("2022-04-15T17:03:28Z", "2022-04-15T17:03:28+00:00", "2022-04-15 17:03:28");
 
         validDateTimeStrings.forEach(string -> {
             assert ActivityValidator.startDateTimeStringIsValid(string).isValid();
+        });
+
+        invalidDateTimeStrings.forEach(string -> {
+            assert !ActivityValidator.startDateTimeStringIsValid(string).isValid();
         });
 
     }

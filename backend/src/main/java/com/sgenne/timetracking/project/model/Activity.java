@@ -1,11 +1,9 @@
 package com.sgenne.timetracking.project.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -14,25 +12,31 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table
+@NoArgsConstructor
 public class Activity {
 
 
     @SequenceGenerator(name = "activity_sequence", sequenceName = "activity_sequence")
     @GeneratedValue(generator = "activity_sequence")
+    @Id
     private Long id;
     private String title;
     private String description;
     private LocalDateTime startDateTime;
+
+    @ManyToOne
+    private Project project;
 
     /**
      * The duration of the activity in minutes.
      */
     private Double duration;
 
-    public Activity(String title, String description, LocalDateTime startDateTime, Double duration) {
+    public Activity(String title, String description, LocalDateTime startDateTime, Project project, Double duration) {
         this.title = title;
         this.description = description;
         this.startDateTime = startDateTime;
+        this.project = project;
         this.duration = duration;
     }
 }
