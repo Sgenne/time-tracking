@@ -1,7 +1,6 @@
 package com.sgenne.timetracking.project.controller;
 
 import com.sgenne.timetracking.project.model.Project;
-import com.sgenne.timetracking.project.request.CreateActivityRequest;
 import com.sgenne.timetracking.project.request.CreateProjectRequest;
 import com.sgenne.timetracking.project.service.ProjectService;
 import lombok.AllArgsConstructor;
