@@ -1,6 +1,5 @@
 package com.sgenne.timetracking.project.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.request.CreateProjectRequest;
@@ -11,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -67,10 +66,17 @@ class ProjectControllerTest {
 
         when(projectService.createProject(request)).thenReturn(createdProject);
 
-        this.mockMvc.perform(MockMvcRequestBuilders
-                .post(PROJECT_ROOT_URL + "/")
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders
+                .post(PROJECT_ROOT_URL)
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andReturn();
+
+        String locationHeaderValue = mvcResult
+                .getResponse()
+                .getHeader("Location");
+
+        assert locationHeaderValue.matches("^.+" + PROJECT_ROOT_URL + "/" + projectId);
     }
 }

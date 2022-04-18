@@ -28,7 +28,7 @@ public class ProjectController {
         return ResponseEntity.ok().body(project);
     }
 
-    @PostMapping(value="/", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
+    @PostMapping(consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public ResponseEntity<Void> createProject(@RequestBody CreateProjectRequest request) {
         Project project = projectService.createProject(request);
 

@@ -26,7 +26,7 @@ public class ActivityController {
 
         URI uri = URI.create(ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .path(ACTIVITY_ROOT_URL + createdActivity.getId())
+                .path(ACTIVITY_ROOT_URL + "/" + createdActivity.getId())
                 .toUriString());
 
 
