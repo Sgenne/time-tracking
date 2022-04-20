@@ -1,52 +1,86 @@
 package com.sgenne.timetracking.project.service;
 
 import com.sgenne.timetracking.project.model.Activity;
+import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.repository.ActivityRepository;
 import com.sgenne.timetracking.project.request.CreateActivityRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ActivityServiceTest {
 
-    @MockBean
-    private ActivityRepository mockActivityRepository;
-
-    @MockBean
-    private ProjectService mockProjectService;
-
 
     @Test
     void createActivity() {
+        ActivityRepository mockActivityRepository = mock(ActivityRepository.class);
+
+        ProjectService mockProjectService = mock(ProjectService.class);
+
         String activityTitle = "title";
         String activityDescription = "description";
         String activityStartDateTime = LocalDateTime.now().toString();
         Double activityDuration = 60.;
         Long projectId = 1L;
 
-        CreateActivityRequest createActivityRequest = new CreateActivityRequest(activityTitle, activityDescription, activityStartDateTime, activityDuration, projectId);
+        CreateActivityRequest createActivityRequest =
+                new CreateActivityRequest(
+                        activityTitle,
+                        activityDescription,
+                        activityStartDateTime,
+                        activityDuration,
+                        projectId);
+
         Activity newActivity = new Activity();
         Long activityId = 1L;
         newActivity.setId(activityId);
 
         when(mockActivityRepository
-                .save(newActivity))
+                .save(any(Activity.class)))
                 .thenReturn(newActivity);
+        when(mockProjectService
+                .getProjectById(projectId))
+                .thenReturn(new Project());
 
         ActivityService activityService = new ActivityService(mockActivityRepository, mockProjectService);
 
-        Activity resultActivity = activityService.createActivity(newActivity);
+        Activity resultActivity = activityService.createActivity(createActivityRequest);
 
-        assert ;
+        assert resultActivity.getTitle().equals(activityTitle);
     }
 
     @Test
     void getActivityById() {
-        assert false;
+
+        ActivityRepository mockActivityRepository = mock(ActivityRepository.class);
+
+        ProjectService mockProjectService = mock(ProjectService.class);
+
+        Long activityId = 1L;
+        Activity existingActivity = new Activity("title",
+                "description",
+                LocalDateTime.now(),
+                new Project(),
+                60.);
+        existingActivity.setId(activityId);
+
+        when(mockActivityRepository
+                .findById(activityId))
+                .thenReturn(Optional.of(existingActivity));
+
+        ActivityService activityService =
+                new ActivityService(mockActivityRepository, mockProjectService);
+
+        Activity foundActivity = activityService.getActivityById(activityId);
+
+        assert foundActivity.equals(existingActivity);
     }
 }
