@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
+
 import static com.sgenne.timetracking.project.controller.ActivityController.ACTIVITY_ROOT_URL;
 import static com.sgenne.timetracking.project.controller.ProjectController.PROJECT_ROOT_URL;
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,5 +77,24 @@ class ActivityControllerTest {
         assert response.getStatus() == 200;
         assert response.getContentType().equals(APPLICATION_JSON_VALUE);
 
+    }
+
+    @Test
+    void getActivityByProjectId() throws Exception {
+        Long projectId = 1L;
+        List<Activity> projectActivities =
+                List.of(new Activity(), new Activity());
+
+        when(activityService.getActivityByProjectId(projectId))
+                .thenReturn(projectActivities);
+
+        MockHttpServletResponse response =
+                mockMvc.perform(MockMvcRequestBuilders
+                        .get(ACTIVITY_ROOT_URL + "/by-project/" + projectId))
+                        .andReturn()
+                        .getResponse();
+
+        assert response.getStatus() == 200;
+        assert response.getContentType().equals(APPLICATION_JSON_VALUE);
     }
 }

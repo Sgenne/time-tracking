@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 
 class ActivityServiceTest {
 
-
     @Test
     void createActivity() {
         ActivityRepository mockActivityRepository = mock(ActivityRepository.class);

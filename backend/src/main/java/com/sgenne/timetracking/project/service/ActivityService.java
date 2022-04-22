@@ -65,4 +65,8 @@ public class ActivityService {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
                         String.format("No activity with id \"%s\" was found.", activityId)));
     }
+
+    public Object getActivityByProjectId(Long projectId) {
+
+    }
 }
