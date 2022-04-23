@@ -3,6 +3,7 @@ package com.sgenne.timetracking.project.service;
 import com.sgenne.timetracking.project.model.Activity;
 import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.repository.ActivityRepository;
+import com.sgenne.timetracking.project.repository.ProjectRepository;
 import com.sgenne.timetracking.project.request.CreateActivityRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,7 +23,7 @@ class ActivityServiceTest {
     void createActivity() {
         ActivityRepository mockActivityRepository = mock(ActivityRepository.class);
 
-        ProjectService mockProjectService = mock(ProjectService.class);
+        ProjectRepository mockProjectRepository = mock(ProjectRepository.class);
 
         String activityTitle = "title";
         String activityDescription = "description";
@@ -45,11 +46,10 @@ class ActivityServiceTest {
         when(mockActivityRepository
                 .save(any(Activity.class)))
                 .thenReturn(newActivity);
-        when(mockProjectService
-                .getProjectById(projectId))
-                .thenReturn(new Project());
 
-        ActivityService activityService = new ActivityService(mockActivityRepository, mockProjectService);
+        when(mockProjectRepository.findById(activityId)).thenReturn(Optional.of(new Project()));
+
+        ActivityService activityService = new ActivityService(mockActivityRepository, mockProjectRepository);
 
         Activity resultActivity = activityService.createActivity(createActivityRequest);
 
@@ -61,7 +61,8 @@ class ActivityServiceTest {
 
         ActivityRepository mockActivityRepository = mock(ActivityRepository.class);
 
-        ProjectService mockProjectService = mock(ProjectService.class);
+        ProjectRepository mockProjectRepository = mock(ProjectRepository.class);
+
 
         Long activityId = 1L;
         Activity existingActivity = new Activity("title",
@@ -76,7 +77,7 @@ class ActivityServiceTest {
                 .thenReturn(Optional.of(existingActivity));
 
         ActivityService activityService =
-                new ActivityService(mockActivityRepository, mockProjectService);
+                new ActivityService(mockActivityRepository, mockProjectRepository);
 
         Activity foundActivity = activityService.getActivityById(activityId);
 
