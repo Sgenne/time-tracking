@@ -41,7 +41,7 @@ public class ProjectService {
         descriptionIsValid(description).orThrow(
                 (message) -> new ResponseStatusException(BAD_REQUEST, message));
 
-        Project project = new Project(title, description, owner);
+        Project project = new Project(title, description, owner.getId());
 
         return projectRepository.save(project);
     }

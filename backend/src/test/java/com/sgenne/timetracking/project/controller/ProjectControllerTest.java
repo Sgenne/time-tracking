@@ -40,10 +40,7 @@ class ProjectControllerTest {
         Project existingProject =
                 new Project("Title",
                         "description",
-                        new User(
-                                "username",
-                                "password",
-                                List.of(Role.USER)));
+                        1L);
         existingProject.setId(projectId);
 
         when(projectService.getProjectById(projectId))

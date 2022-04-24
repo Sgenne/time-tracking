@@ -58,7 +58,7 @@ public class ActivityService {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
                         String.format("No project with the id \"%s\" was found", projectId)));
 
-        Activity newActivity = new Activity(title, description, startDateTime, project, duration);
+        Activity newActivity = new Activity(title, description, startDateTime, project.getId(), duration);
 
         activityRepository.save(newActivity);
 

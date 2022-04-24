@@ -36,7 +36,16 @@ public class AppConfig {
                             60.,
                             1L);
 
+            CreateActivityRequest createActivityRequest1 =
+                    new CreateActivityRequest(
+                            "ActivityTitle1",
+                            "ActivityDescription1",
+                            "2022-04-16T17:03:28",
+                            30.,
+                            1L);
+
             activityService.createActivity(createActivityRequest);
+            activityService.createActivity(createActivityRequest1);
         };
     }
 

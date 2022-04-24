@@ -20,12 +20,11 @@ public class Project {
     private Long id;
     private String title;
     private String description;
-    @ManyToOne
-    private User owner;
+    private Long ownerId;
 
-    public Project(String title, String description, User owner) {
+    public Project(String title, String description, Long ownerId) {
         this.title = title;
         this.description = description;
-        this.owner = owner;
+        this.ownerId = ownerId;
     }
 }

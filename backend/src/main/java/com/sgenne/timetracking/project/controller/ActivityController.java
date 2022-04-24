@@ -58,7 +58,9 @@ public class ActivityController {
      */
     @GetMapping(value = "/by-project/{projectId}", produces = APPLICATION_JSON)
     public ResponseEntity<List<Activity>> getActivityByProjectId(@PathVariable Long projectId) {
-        throw new NotYetImplementedException();
+        List<Activity> activities = activityService.getActivityByProjectId(projectId);
+
+        return ResponseEntity.ok().body(activities);
     }
 
 

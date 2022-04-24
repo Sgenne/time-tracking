@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
-    @Query("SELECT a FROM Activity a WHERE a.project.id = ?1")
+    @Query("SELECT a FROM Activity a WHERE a.projectId = ?1")
     List<Activity> getActivitiesByProjectId(Long projectId);
 }

@@ -23,19 +23,18 @@ public class Activity {
     private String description;
     private LocalDateTime startDateTime;
 
-    @ManyToOne
-    private Project project;
+    private Long projectId;
 
     /**
      * The duration of the activity in minutes.
      */
     private Double duration;
 
-    public Activity(String title, String description, LocalDateTime startDateTime, Project project, Double duration) {
+    public Activity(String title, String description, LocalDateTime startDateTime, Long projectId, Double duration) {
         this.title = title;
         this.description = description;
         this.startDateTime = startDateTime;
-        this.project = project;
+        this.projectId = projectId;
         this.duration = duration;
     }
 }

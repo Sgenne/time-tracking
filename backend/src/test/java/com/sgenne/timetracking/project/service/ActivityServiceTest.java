@@ -68,7 +68,7 @@ class ActivityServiceTest {
         Activity existingActivity = new Activity("title",
                 "description",
                 LocalDateTime.now(),
-                new Project(),
+                1L,
                 60.);
         existingActivity.setId(activityId);
 
