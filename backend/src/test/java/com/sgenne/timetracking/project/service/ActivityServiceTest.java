@@ -7,8 +7,10 @@ import com.sgenne.timetracking.project.repository.ProjectRepository;
 import com.sgenne.timetracking.project.request.CreateActivityRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +24,6 @@ class ActivityServiceTest {
     @Test
     void createActivity() {
         ActivityRepository mockActivityRepository = mock(ActivityRepository.class);
-
         ProjectRepository mockProjectRepository = mock(ProjectRepository.class);
 
         String activityTitle = "title";
@@ -58,11 +59,8 @@ class ActivityServiceTest {
 
     @Test
     void getActivityById() {
-
         ActivityRepository mockActivityRepository = mock(ActivityRepository.class);
-
         ProjectRepository mockProjectRepository = mock(ProjectRepository.class);
-
 
         Long activityId = 1L;
         Activity existingActivity = new Activity("title",
@@ -82,5 +80,46 @@ class ActivityServiceTest {
         Activity foundActivity = activityService.getActivityById(activityId);
 
         assert foundActivity.equals(existingActivity);
+    }
+
+    @Test
+    void getActivityByProjectId_projectExists() {
+        ActivityRepository mockActivityRepository = mock(ActivityRepository.class);
+        ProjectRepository mockProjectRepository = mock(ProjectRepository.class);
+
+        when(mockProjectRepository.findById(any()))
+                .thenReturn(Optional.of(new Project()));
+
+        List<Activity> activities = List.of(new Activity(), new Activity());
+        when(mockActivityRepository.getActivitiesByProjectId(any()))
+                .thenReturn(activities);
+
+        ActivityService activityService =
+                new ActivityService(mockActivityRepository, mockProjectRepository);
+
+        List<Activity> result = activityService.getActivityByProjectId(1L);
+
+        assertEquals(result, activities);
+    }
+
+
+    @Test
+    void getActivityByProjectId_projectDoesNotExist() {
+        ActivityRepository mockActivityRepository = mock(ActivityRepository.class);
+        ProjectRepository mockProjectRepository = mock(ProjectRepository.class);
+
+        when(mockProjectRepository.findById(any()))
+                .thenReturn(Optional.ofNullable(null));
+
+        List<Activity> activities = List.of(new Activity(), new Activity());
+        when(mockActivityRepository.getActivitiesByProjectId(any()))
+                .thenReturn(activities);
+
+        ActivityService activityService =
+                new ActivityService(mockActivityRepository, mockProjectRepository);
+
+        assertThrows(ResponseStatusException.class, () -> {
+            activityService.getActivityByProjectId(1L);
+        });
     }
 }
