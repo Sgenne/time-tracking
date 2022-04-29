@@ -1,5 +1,6 @@
 package com.sgenne.timetracking.project.service;
 
+import com.sgenne.timetracking.error.exception.ResourceNotFoundException;
 import com.sgenne.timetracking.project.model.Activity;
 import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.repository.ActivityRepository;
@@ -7,7 +8,6 @@ import com.sgenne.timetracking.project.repository.ProjectRepository;
 import com.sgenne.timetracking.project.request.CreateActivityRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -118,7 +118,7 @@ class ActivityServiceTest {
         ActivityService activityService =
                 new ActivityService(mockActivityRepository, mockProjectRepository);
 
-        assertThrows(ResponseStatusException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             activityService.getActivityByProjectId(1L);
         });
     }

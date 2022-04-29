@@ -1,12 +1,12 @@
 package com.sgenne.timetracking.project.service;
 
+import com.sgenne.timetracking.error.exception.ResourceNotFoundException;
 import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.repository.ProjectRepository;
 import com.sgenne.timetracking.project.request.CreateProjectRequest;
 import com.sgenne.timetracking.user.UserRepository;
 import com.sgenne.timetracking.user.model.User;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -71,7 +71,7 @@ class ProjectServiceTest {
 
         CreateProjectRequest createProjectRequest = createCreateProjectRequest(ownerId);
 
-        assertThrows(ResponseStatusException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             projectService.createProject(createProjectRequest);
         });
     }
@@ -110,7 +110,7 @@ class ProjectServiceTest {
         ProjectService projectService =
                 new ProjectService(mockProjectRepository, mockUserRepository);
 
-        assertThrows(ResponseStatusException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             projectService.getProjectById(projectId);
         } );
     }

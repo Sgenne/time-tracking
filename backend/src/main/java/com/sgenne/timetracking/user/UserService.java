@@ -1,10 +1,10 @@
 package com.sgenne.timetracking.user;
 
+import com.sgenne.timetracking.error.exception.ResourceNotFoundException;
 import com.sgenne.timetracking.user.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 
@@ -20,7 +20,9 @@ public class UserService {
     }
 
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with the id " + id));
+        return userRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("No user with the id " + id));
     }
-
 }

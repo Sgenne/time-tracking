@@ -1,5 +1,6 @@
 package com.sgenne.timetracking.project.service;
 
+import com.sgenne.timetracking.error.exception.ResourceNotFoundException;
 import com.sgenne.timetracking.project.model.Activity;
 import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.repository.ActivityRepository;
@@ -8,7 +9,6 @@ import com.sgenne.timetracking.project.request.CreateActivityRequest;
 import lombok.AllArgsConstructor;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,21 +44,27 @@ public class ActivityService {
         Long projectId = request.getProjectId();
 
         titleIsValid(title)
-                .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
+                .orThrow(ResourceNotFoundException::new);
         descriptionIsValid(description)
-                .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
+                .orThrow(ResourceNotFoundException::new);
         durationIsValid(duration)
-                .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
+                .orThrow(ResourceNotFoundException::new);
         startDateTimeStringIsValid(startTime)
-                .orThrow((message) -> new ResponseStatusException(BAD_REQUEST, message));
+                .orThrow(ResourceNotFoundException::new);
 
         LocalDateTime startDateTime = LocalDateTime.parse(startTime);
 
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
-                        String.format("No project with the id \"%s\" was found", projectId)));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("No project with the id \"%s\" was found", projectId)));
 
-        Activity newActivity = new Activity(title, description, startDateTime, project.getId(), duration);
+        Activity newActivity = new Activity(
+                title,
+                description,
+                startDateTime,
+                project.getId(),
+                duration);
 
         activityRepository.save(newActivity);
 
@@ -68,8 +74,9 @@ public class ActivityService {
     public Activity getActivityById(Long activityId) {
         return activityRepository
                 .findById(activityId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
-                        String.format("No activity with id \"%s\" was found.", activityId)));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("No activity with id \"%s\" was found.", activityId)));
     }
 
     /**
@@ -80,8 +87,9 @@ public class ActivityService {
     public List<Activity> getActivityByProjectId(Long projectId) {
 
         projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
-                        String.format("No project with the id \"%s\" was found.", projectId)));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("No project with the id \"%s\" was found.", projectId)));
 
         return activityRepository.getActivitiesByProjectId(projectId);
     }

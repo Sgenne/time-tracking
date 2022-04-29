@@ -1,22 +1,18 @@
 package com.sgenne.timetracking.project.service;
 
+import com.sgenne.timetracking.error.exception.ResourceNotFoundException;
 import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.repository.ProjectRepository;
 import com.sgenne.timetracking.project.request.CreateProjectRequest;
 import com.sgenne.timetracking.user.UserRepository;
-import com.sgenne.timetracking.user.UserService;
 import com.sgenne.timetracking.user.model.User;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 
 import static com.sgenne.timetracking.project.validation.ProjectValidator.descriptionIsValid;
 import static com.sgenne.timetracking.project.validation.ProjectValidator.titleIsValid;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 @AllArgsConstructor
@@ -36,14 +32,15 @@ public class ProjectService {
         String description = request.getDescription();
         Long ownerId = request.getOwnerId();
 
-        User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format("No user with the id \"%s\" was found.", ownerId)));
-
-        titleIsValid(title).orThrow(
-                (message) -> new ResponseStatusException(BAD_REQUEST, message));
-
-        descriptionIsValid(description).orThrow(
-                (message) -> new ResponseStatusException(BAD_REQUEST, message));
+        User owner = userRepository
+                .findById(ownerId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("No user with the id \"%s\" was found.", ownerId)));
+        titleIsValid(title)
+                .orThrow(ResourceNotFoundException::new);
+        descriptionIsValid(description)
+                .orThrow(ResourceNotFoundException::new);
 
         Project project = new Project(title, description, owner.getId());
 
@@ -60,12 +57,9 @@ public class ProjectService {
                 .projectRepository
                 .findById(projectId)
                 .orElseThrow(
-                        () -> new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
+                        () -> new ResourceNotFoundException(
                                 String.format(
                                         "No project with project-id \"%s\" was found.",
                                         projectId)));
     }
-
-
 }
