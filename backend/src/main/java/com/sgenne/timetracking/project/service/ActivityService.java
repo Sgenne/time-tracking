@@ -7,7 +7,6 @@ import com.sgenne.timetracking.project.repository.ActivityRepository;
 import com.sgenne.timetracking.project.repository.ProjectRepository;
 import com.sgenne.timetracking.project.request.CreateActivityRequest;
 import lombok.AllArgsConstructor;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,8 +18,6 @@ import static com.sgenne.timetracking.project.validation.ActivityValidator.durat
 import static com.sgenne.timetracking.project.validation.ActivityValidator.startDateTimeStringIsValid;
 import static com.sgenne.timetracking.project.validation.ProjectValidator.descriptionIsValid;
 import static com.sgenne.timetracking.project.validation.ProjectValidator.titleIsValid;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 @AllArgsConstructor

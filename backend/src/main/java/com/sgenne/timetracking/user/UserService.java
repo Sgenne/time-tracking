@@ -3,6 +3,7 @@ package com.sgenne.timetracking.user;
 import com.sgenne.timetracking.error.exception.ResourceNotFoundException;
 import com.sgenne.timetracking.user.model.User;
 import lombok.AllArgsConstructor;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 

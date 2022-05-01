@@ -1,11 +1,9 @@
 package com.sgenne.timetracking.project.controller;
 
 import com.sgenne.timetracking.project.model.Activity;
-import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.request.CreateActivityRequest;
 import com.sgenne.timetracking.project.service.ActivityService;
 import lombok.AllArgsConstructor;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
