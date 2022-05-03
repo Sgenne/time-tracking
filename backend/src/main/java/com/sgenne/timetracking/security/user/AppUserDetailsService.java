@@ -1,7 +1,6 @@
-package com.sgenne.timetracking.security;
+package com.sgenne.timetracking.security.user;
 
 import com.sgenne.timetracking.user.UserRepository;
-import com.sgenne.timetracking.user.UserService;
 import com.sgenne.timetracking.user.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
