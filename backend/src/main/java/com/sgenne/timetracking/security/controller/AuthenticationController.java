@@ -1,5 +1,6 @@
 package com.sgenne.timetracking.security.controller;
 
+import com.sgenne.timetracking.error.exception.InvalidCredentialsException;
 import com.sgenne.timetracking.security.jwt.JwtRequest;
 import com.sgenne.timetracking.security.jwt.JwtResponse;
 import com.sgenne.timetracking.security.jwt.JwtTokenUtil;
@@ -46,10 +47,8 @@ public class AuthenticationController {
         try{
             authenticationManager.authenticate(token);
         } catch (BadCredentialsException e) {
-
+            throw InvalidCredentialsException.forUsername(username);
         }
-
-
     }
 
 }
