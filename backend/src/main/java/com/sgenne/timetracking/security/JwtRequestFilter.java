@@ -4,6 +4,7 @@ import com.sgenne.timetracking.error.exception.BadRequestException;
 import com.sgenne.timetracking.error.exception.InvalidCredentialsException;
 import com.sgenne.timetracking.security.jwt.JwtTokenUtil;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,10 +18,12 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.io.IOException;
 
 @Component
 @AllArgsConstructor
+@Transactional
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
@@ -28,14 +31,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
         String tokenHeader = request.getHeader("Authorization");
         String bearerPrefix = "Bearer ";
 
         if (tokenHeader == null || !tokenHeader.startsWith(bearerPrefix)) {
-            throw new BadRequestException("The request did not contain a valid access token.");
+            filterChain.doFilter(request, response);
+            return;
         }
 
         String username;
@@ -44,7 +48,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         try {
             username = jwtTokenUtil.getUsernameFromToken(token);
         } catch (Exception e) {
-            throw new BadRequestException("The request did not contain a valid access token.");
+            System.out.println("HERE");
+            System.out.println("Exception: " + e.getClass());
+            filterChain.doFilter(request, response);
+            return;
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);

@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.Collection;
 
 @Data
@@ -19,8 +20,8 @@ public class User {
 
     private String username;
     private String password;
-
     @ElementCollection(targetClass = Role.class)
+    @Enumerated(EnumType.STRING)
     private Collection<Role> roles;
 
     public User(String username, String password, Collection<Role> roles) {

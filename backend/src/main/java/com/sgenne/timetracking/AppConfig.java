@@ -21,7 +21,7 @@ public class AppConfig {
     @Bean
     CommandLineRunner commandLineRunner(UserService userService, ProjectService projectService, ActivityService activityService) {
         return args -> {
-            User user = new User("sgenne", "123123", List.of(USER, ADMIN));
+            User user = new User("Sgenne", "$2a$12$i9eRRtwDUiF4ddV4rt1pLuPTZNLrfRVtfCJZKafQoSglpaQ.tJB7.", List.of(USER, ADMIN));
             userService.saveUser(user);
 
             CreateProjectRequest createProjectRequest =

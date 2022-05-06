@@ -10,7 +10,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionControllerAdvice {
 
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<ExceptionResponse> handleException(ResourceNotFoundException exception) {
+    public ResponseEntity<ExceptionResponse> handleException(AppException exception) {
         return ResponseEntity.status(exception.getStatusCode()).body(new ExceptionResponse(exception));
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ExceptionResponse> handleException(RuntimeException exception) {
+        System.out.println("exception: " + exception.getMessage());
+        return ResponseEntity.status(500).body(new ExceptionResponse(exception));
+    }
+
 }
