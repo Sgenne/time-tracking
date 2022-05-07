@@ -1,12 +1,13 @@
 package com.sgenne.timetracking.security;
 
-import com.sgenne.timetracking.error.exception.BadRequestException;
 import com.sgenne.timetracking.error.exception.InvalidCredentialsException;
-import com.sgenne.timetracking.security.jwt.JwtTokenUtil;
+import com.sgenne.timetracking.security.jwt.AccessTokenUtils;
+import com.sgenne.timetracking.security.jwt.AuthenticationToken;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,7 +28,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final AccessTokenUtils accessTokenUtils;
 
     @Override
     protected void doFilterInternal(
@@ -35,32 +36,25 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         String tokenHeader = request.getHeader("Authorization");
-        String bearerPrefix = "Bearer ";
 
-        if (tokenHeader == null || !tokenHeader.startsWith(bearerPrefix)) {
+
+        if (tokenHeader == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String username;
-        String token = tokenHeader.substring(bearerPrefix.length());
+        AuthenticationToken token = AuthenticationToken.fromBearerFormat(tokenHeader);
 
+        String username;
         try {
-            username = jwtTokenUtil.getUsernameFromToken(token);
-        } catch (Exception e) {
-            System.out.println("HERE");
-            System.out.println("Exception: " + e.getClass());
-            filterChain.doFilter(request, response);
-            return;
+            username = accessTokenUtils.parseUsernameFromAuthenticationToken(token);
+        } catch (ExpiredJwtException e) {
+            throw new InvalidCredentialsException("The given authentication token was expired.");
+        } catch (JwtException e) {
+            throw new InvalidCredentialsException("The given authentication token was invalid.");
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        boolean tokenIsValid = jwtTokenUtil.validateToken(token, userDetails);
-
-        if (!tokenIsValid) {
-            throw new InvalidCredentialsException("The given access token was invalid.");
-        }
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(
@@ -71,7 +65,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         usernamePasswordAuthenticationToken
                 .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        SecurityContextHolder
+                .getContext()
+                .setAuthentication(usernamePasswordAuthenticationToken);
+
         filterChain.doFilter(request, response);
     }
 }

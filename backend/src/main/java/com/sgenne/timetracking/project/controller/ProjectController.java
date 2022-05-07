@@ -21,6 +21,11 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
+    /**
+     * Finds a project by its project-id.
+     * @param projectId The id of the project.
+     * @return The found project.
+     */
     @GetMapping("/{projectId}")
     public ResponseEntity<Project> getProjectById(@PathVariable Long projectId) {
         Project project = projectService.getProjectById(projectId);
@@ -28,6 +33,11 @@ public class ProjectController {
         return ResponseEntity.ok().body(project);
     }
 
+    /**
+     * Creates a project
+     * @param request Contains the contents of the project to create.
+     * @return An empty response indicating whether the project was created or not.
+     */
     @PostMapping(consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public ResponseEntity<Void> createProject(@RequestBody CreateProjectRequest request) {
         Project project = projectService.createProject(request);
@@ -40,7 +50,4 @@ public class ProjectController {
 
         return ResponseEntity.created(uri).build();
     }
-
-
-
 }

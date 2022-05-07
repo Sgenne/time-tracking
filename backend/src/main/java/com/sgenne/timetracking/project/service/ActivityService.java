@@ -68,6 +68,11 @@ public class ActivityService {
         return newActivity;
     }
 
+    /**
+     * Finds an Activity by id.
+     * @param activityId The id of the Activity to find.
+     * @return The found Activity.
+     */
     public Activity getActivityById(Long activityId) {
         return activityRepository
                 .findById(activityId)

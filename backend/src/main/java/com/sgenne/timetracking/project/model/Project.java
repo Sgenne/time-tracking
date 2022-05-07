@@ -1,12 +1,10 @@
 package com.sgenne.timetracking.project.model;
 
 
-import com.sgenne.timetracking.user.model.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table

@@ -13,11 +13,4 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<ExceptionResponse> handleException(AppException exception) {
         return ResponseEntity.status(exception.getStatusCode()).body(new ExceptionResponse(exception));
     }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ExceptionResponse> handleException(RuntimeException exception) {
-        System.out.println("exception: " + exception.getMessage());
-        return ResponseEntity.status(500).body(new ExceptionResponse(exception));
-    }
-
 }

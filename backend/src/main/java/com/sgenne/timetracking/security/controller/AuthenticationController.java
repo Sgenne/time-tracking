@@ -1,9 +1,9 @@
 package com.sgenne.timetracking.security.controller;
 
 import com.sgenne.timetracking.error.exception.InvalidCredentialsException;
-import com.sgenne.timetracking.security.jwt.JwtRequest;
-import com.sgenne.timetracking.security.jwt.JwtResponse;
-import com.sgenne.timetracking.security.jwt.JwtTokenUtil;
+import com.sgenne.timetracking.security.jwt.AuthenticationRequest;
+import com.sgenne.timetracking.security.jwt.AuthenticationToken;
+import com.sgenne.timetracking.security.jwt.AccessTokenUtils;
 import com.sgenne.timetracking.security.user.AppUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
-
 import static com.sgenne.timetracking.api.APIConstants.APPLICATION_JSON;
 
 @RestController
@@ -27,30 +25,34 @@ public class AuthenticationController {
     public static final String AUTHENTICATION_ROOT_URL = "/api/v1/authentication";
 
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final AccessTokenUtils accessTokenUtils;
     private final AppUserDetailsService userDetailsService;
 
+    /**
+     * Authenticates a user and produces an AuthenticationToken.
+     * @param request Contains the user credentials to authenticate.
+     * @return A response with the newly created AuthenticationToken.
+     */
     @PostMapping(consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
-    public ResponseEntity<JwtResponse> generateAuthenticationToken(@RequestBody JwtRequest request) {
+    public ResponseEntity<AuthenticationToken> authenticateUser(@RequestBody AuthenticationRequest request) {
         String username = request.getUsername();
         String password = request.getPassword();
 
-        authenticate(username, password);
+        UsernamePasswordAuthenticationToken usernamePasswordToken =
+                new UsernamePasswordAuthenticationToken(username, password);
+        try {
+            authenticationManager.authenticate(usernamePasswordToken);
+        } catch (BadCredentialsException e) {
+            throw new InvalidCredentialsException("The given credentials were invalid.");
+        }
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        String token = jwtTokenUtil.generateToken(userDetails);
+        AuthenticationToken authenticationToken =
+                new AuthenticationToken(
+                        accessTokenUtils.generateToken(userDetails)
+                );
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.ok(authenticationToken);
     }
-
-    private void authenticate(String username, String password) {
-        UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(username, password);
-        try{
-            authenticationManager.authenticate(token);
-        } catch (BadCredentialsException e) {
-            throw InvalidCredentialsException.forUsername(username);
-        }
-    }
-
 }
