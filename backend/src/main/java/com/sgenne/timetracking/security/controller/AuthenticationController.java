@@ -1,9 +1,9 @@
 package com.sgenne.timetracking.security.controller;
 
 import com.sgenne.timetracking.error.exception.InvalidCredentialsException;
-import com.sgenne.timetracking.security.jwt.AuthenticationRequest;
-import com.sgenne.timetracking.security.jwt.AuthenticationToken;
-import com.sgenne.timetracking.security.jwt.AccessTokenUtils;
+import com.sgenne.timetracking.security.request.AuthenticationRequest;
+import com.sgenne.timetracking.security.accessToken.AccessToken;
+import com.sgenne.timetracking.security.accessToken.AccessTokenUtils;
 import com.sgenne.timetracking.security.user.AppUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class AuthenticationController {
      * @return A response with the newly created AuthenticationToken.
      */
     @PostMapping(consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
-    public ResponseEntity<AuthenticationToken> authenticateUser(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<AccessToken> authenticateUser(@RequestBody AuthenticationRequest request) {
         String username = request.getUsername();
         String password = request.getPassword();
 
@@ -48,11 +48,11 @@ public class AuthenticationController {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        AuthenticationToken authenticationToken =
-                new AuthenticationToken(
+        AccessToken accessToken =
+                new AccessToken(
                         accessTokenUtils.generateToken(userDetails)
                 );
 
-        return ResponseEntity.ok(authenticationToken);
+        return ResponseEntity.ok(accessToken);
     }
 }

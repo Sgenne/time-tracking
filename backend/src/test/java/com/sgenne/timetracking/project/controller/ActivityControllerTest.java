@@ -4,23 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sgenne.timetracking.project.model.Activity;
 import com.sgenne.timetracking.project.request.CreateActivityRequest;
 import com.sgenne.timetracking.project.service.ActivityService;
+import com.sgenne.timetracking.security.accessToken.AccessTokenUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
 import static com.sgenne.timetracking.project.controller.ActivityController.ACTIVITY_ROOT_URL;
-import static com.sgenne.timetracking.project.controller.ProjectController.PROJECT_ROOT_URL;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -40,6 +37,12 @@ class ActivityControllerTest {
     @MockBean
     private ActivityService activityService;
 
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
+    private AccessTokenUtils accessTokenUtils;
+    @WithMockUser
     @Test
     void addActivity() throws Exception {
         Long activityId = 1L;
@@ -65,6 +68,7 @@ class ActivityControllerTest {
 
     }
 
+    @WithMockUser
     @Test
     void getActivityById() throws Exception{
         Long activityId = 1L;
@@ -84,7 +88,7 @@ class ActivityControllerTest {
         assert response.getContentType().equals(APPLICATION_JSON_VALUE);
 
     }
-
+    @WithMockUser
     @Test
     void getActivityByProjectId() throws Exception {
         Long projectId = 1L;

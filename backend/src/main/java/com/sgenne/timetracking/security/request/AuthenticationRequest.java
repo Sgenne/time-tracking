@@ -1,4 +1,4 @@
-package com.sgenne.timetracking.security.jwt;
+package com.sgenne.timetracking.security.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

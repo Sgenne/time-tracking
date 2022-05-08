@@ -1,8 +1,8 @@
 package com.sgenne.timetracking.security;
 
 import com.sgenne.timetracking.error.exception.InvalidCredentialsException;
-import com.sgenne.timetracking.security.jwt.AccessTokenUtils;
-import com.sgenne.timetracking.security.jwt.AuthenticationToken;
+import com.sgenne.timetracking.security.accessToken.AccessTokenUtils;
+import com.sgenne.timetracking.security.accessToken.AccessToken;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
@@ -43,7 +43,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        AuthenticationToken token = AuthenticationToken.fromBearerFormat(tokenHeader);
+        AccessToken token = AccessToken.fromBearerFormat(tokenHeader);
 
         String username;
         try {

@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sgenne.timetracking.project.model.Project;
 import com.sgenne.timetracking.project.request.CreateProjectRequest;
 import com.sgenne.timetracking.project.service.ProjectService;
+import com.sgenne.timetracking.security.accessToken.AccessTokenUtils;
 import com.sgenne.timetracking.user.model.Role;
 import com.sgenne.timetracking.user.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -33,6 +36,13 @@ class ProjectControllerTest {
     @MockBean
     private ProjectService projectService;
 
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
+    private AccessTokenUtils accessTokenUtils;
+
+    @WithMockUser
     @Test
     public void getProjectById() throws Exception {
         Long projectId = 1L;
@@ -55,6 +65,7 @@ class ProjectControllerTest {
     }
 
     @Test
+    @WithMockUser
     void createProject() throws Exception {
         Long projectId = 1L;
         CreateProjectRequest request = new CreateProjectRequest("title", "description", 0L);

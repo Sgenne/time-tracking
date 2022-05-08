@@ -1,4 +1,4 @@
-package com.sgenne.timetracking.security.jwt;
+package com.sgenne.timetracking.security.accessToken;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -21,7 +21,7 @@ public class AccessTokenUtils implements Serializable {
     private String secret;
 
 
-    public String parseUsernameFromAuthenticationToken(AuthenticationToken token) {
+    public String parseUsernameFromAuthenticationToken(AccessToken token) {
         String tokenString = token.getToken();
 
         Claims claims = Jwts
@@ -33,16 +33,16 @@ public class AccessTokenUtils implements Serializable {
         return claims.getSubject();
     }
 
-    public String getUsernameFromToken(AuthenticationToken token) {
+    public String getUsernameFromToken(AccessToken token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    public Date getExpirationDateFromToken(AuthenticationToken token) {
+    public Date getExpirationDateFromToken(AccessToken token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
 
-    private <T> T getClaimFromToken(AuthenticationToken token, Function<Claims, T> claimsResolver) {
+    private <T> T getClaimFromToken(AccessToken token, Function<Claims, T> claimsResolver) {
         String tokenString = token.getToken();
 
         Claims claims = Jwts
@@ -64,7 +64,7 @@ public class AccessTokenUtils implements Serializable {
                 .compact();
     }
 
-    public boolean tokenIsExpired(AuthenticationToken token) {
+    public boolean tokenIsExpired(AccessToken token) {
         Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
