@@ -25,8 +25,8 @@ public class AuthenticationController {
     public static final String AUTHENTICATION_ROOT_URL = "/api/v1/authentication";
 
     private final AuthenticationManager authenticationManager;
-    private final AccessTokenUtils accessTokenUtils;
     private final AppUserDetailsService userDetailsService;
+    private final AccessTokenUtils accessTokenUtils;
 
     /**
      * Authenticates a user and produces an AuthenticationToken.
@@ -48,10 +48,8 @@ public class AuthenticationController {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        AccessToken accessToken =
-                new AccessToken(
-                        accessTokenUtils.generateToken(userDetails)
-                );
+        AccessToken accessToken = accessTokenUtils.generateToken(userDetails);
+
 
         return ResponseEntity.ok(accessToken);
     }
