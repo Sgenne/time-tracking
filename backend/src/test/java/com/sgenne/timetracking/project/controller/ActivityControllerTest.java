@@ -25,23 +25,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @WebMvcTest(ActivityController.class)
 class ActivityControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private ObjectMapper objectMapper;
+    @Autowired private ActivityController activityController;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @MockBean private ActivityService activityService;
+    @MockBean private UserDetailsService userDetailsService;
+    @MockBean private AccessTokenUtils accessTokenUtils;
 
-    @Autowired
-    private ActivityController activityController;
-
-    @MockBean
-    private ActivityService activityService;
-
-    @MockBean
-    private UserDetailsService userDetailsService;
-
-    @MockBean
-    private AccessTokenUtils accessTokenUtils;
     @WithMockUser
     @Test
     void addActivity() throws Exception {

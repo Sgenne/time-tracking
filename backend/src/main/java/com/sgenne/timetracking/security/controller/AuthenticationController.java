@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +23,10 @@ import static com.sgenne.timetracking.api.APIConstants.APPLICATION_JSON;
 @AllArgsConstructor
 @RequestMapping(AuthenticationController.AUTHENTICATION_ROOT_URL)
 public class AuthenticationController {
-    public static final String AUTHENTICATION_ROOT_URL = "/api/v1/authentication";
+    public static final String AUTHENTICATION_ROOT_URL = "/api/v1/authenticate";
 
     private final AuthenticationManager authenticationManager;
-    private final AppUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final AccessTokenUtils accessTokenUtils;
 
     /**
