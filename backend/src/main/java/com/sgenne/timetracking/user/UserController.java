@@ -6,15 +6,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/user")
+@RequestMapping(UserController.USER_ROOT_URL)
 public class UserController {
-
+    public static final String USER_ROOT_URL = "/api/v1/user";
     private final UserService userService;
-
-    @GetMapping
-    public String hello() {
-        return "Hello";
-    }
 
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable Long userId) {

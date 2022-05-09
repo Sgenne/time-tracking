@@ -56,7 +56,6 @@ class ActivityControllerTest {
         assert response
                 .getHeader("Location")
                 .matches("^.+" + ACTIVITY_ROOT_URL + "/" + activityId);
-
     }
 
     @WithMockUser
@@ -77,8 +76,8 @@ class ActivityControllerTest {
 
         assert response.getStatus() == 200;
         assert response.getContentType().equals(APPLICATION_JSON_VALUE);
-
     }
+
     @WithMockUser
     @Test
     void getActivityByProjectId() throws Exception {
