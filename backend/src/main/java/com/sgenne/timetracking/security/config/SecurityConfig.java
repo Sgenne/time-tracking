@@ -1,5 +1,6 @@
-package com.sgenne.timetracking.security;
+package com.sgenne.timetracking.security.config;
 
+import com.sgenne.timetracking.security.JwtRequestFilter;
 import com.sgenne.timetracking.security.controller.AuthenticationController;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
