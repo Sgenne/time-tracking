@@ -1,6 +1,7 @@
 package com.sgenne.timetracking.security.permission;
 
 import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 import java.io.Serializable;
@@ -8,9 +9,12 @@ import java.io.Serializable;
 public class PermissionHandler implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        if (authentication == null || targetDomainObject == null) return false;
+       /* if (authentication == null || targetDomainObject == null) return false;
 
-        Long clientUserId =
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                (UsernamePasswordAuthenticationToken) authentication;
+
+        */
 
 
         return false;
